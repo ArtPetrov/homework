@@ -1,0 +1,31 @@
+---
+- name: "Check wordpress installed"
+  stat:
+    path: "/var/www/{{ virtual_hostname }}/wp-config.php"
+  register: wp_config
+
+- name: "Download and unarchive WordPress (with SSL)"
+  ansible.builtin.unarchive:
+    src: "https://ru.wordpress.org/latest-ru_RU.tar.gz"
+    dest: "/var/www/{{ virtual_hostname }}"
+    extra_opts:
+      - "--strip-components=1"
+    remote_src: true
+  when: not wp_config.stat.exists
+
+- name: "Update .conf for require wordpress"
+  ansible.builtin.template:
+    src: "example.com.conf.j2"
+    dest: "/etc/nginx/sites-enabled/{{ virtual_hostname }}.conf"
+  notify:
+    - "Restart nginx"
+
+- name: "Remove wp-config-sample.php"
+  ansible.builtin.file:
+    path: "/var/www/{{ virtual_hostname }}/wp-config-sample.php"
+    state: absent
+
+- name: "Update .conf for require wordpress"
+  ansible.builtin.template:
+    src: "wp-config.php.j2"
+    dest: "/var/www/{{ virtual_hostname }}/wp-config.php"

@@ -1,0 +1,17 @@
+---
+- name: "Install official rpm repository"
+  ansible.builtin.yum:
+    name: "https://dev.mysql.com/get/mysql80-community-release-el7-5.noarch.rpm"
+    state: present
+
+- name: "Install"
+  ansible.builtin.yum:
+    name: mysql-server
+    state: present
+    update_cache: true
+
+- name: "Start and enable autorun"
+  ansible.builtin.systemd:
+    state: started
+    name: "mysqld"
+    enabled: true

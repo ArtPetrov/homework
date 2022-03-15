@@ -1,0 +1,30 @@
+---
+- name: "Make sftp user for directory with project"
+  ansible.builtin.user:
+    name: "{{ sftp.developer.name }}"
+    password: "{{ sftp.developer.password | password_hash('sha512') }}"
+    comment: "Developers account"
+
+- name: "Change owner for project directory"
+  ansible.builtin.file:
+    path: "/var/www/{{ virtual_hostname }}"
+    owner: "{{ sftp.developer.name }}"
+    group: "nginx"
+    mode: '0775'
+    state: "directory"
+    recurse: true
+
+- name: "Insert/Update configuration block in '/etc/ssh/sshd_config'"
+  ansible.builtin.blockinfile:
+    path: "/etc/ssh/sshd_config"
+    block: |
+      Match User {{ sftp.developer.name }}
+        PasswordAuthentication yes
+        X11Forwarding no
+        AllowTcpForwarding no
+        AllowAgentForwarding no
+        PermitTunnel no
+        ForceCommand internal-sftp
+        ChrootDirectory /var/www/
+  notify:
+    - "Restart sshd"

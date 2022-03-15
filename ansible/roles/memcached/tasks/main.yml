@@ -1,0 +1,24 @@
+---
+- name: "Install"
+  ansible.builtin.yum:
+    name:
+      - memcached
+    state: present
+    update_cache: true
+
+- name: "Copy configuration for SOCK mode"
+  ansible.builtin.copy:
+    src: "files/etc/sysconfig/memcached"
+    dest: "/etc/sysconfig/memcached"
+
+- name: "Create a directory for memcached socket"
+  ansible.builtin.file:
+    path: "/var/run/memcached"
+    state: directory
+    mode: '0777'
+
+- name: "Start and enable in autorun"
+  ansible.builtin.systemd:
+    state: started
+    name: "memcached"
+    enabled: true

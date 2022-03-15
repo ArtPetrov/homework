@@ -1,0 +1,6 @@
+---
+- name: "Change param 'cgi.fix_pathinfo' on 0 [php.ini]"
+  ansible.builtin.lineinfile:
+    path: "/etc/php.ini"
+    regexp: "^;cgi.fix_pathinfo=1"
+    line: "cgi.fix_pathinfo=0"

@@ -1,0 +1,32 @@
+---
+- name: "Homework from Artem Petrov"
+  hosts: "devops_access"
+  vars_files:
+    - "config.yml"
+
+  become: true
+  roles:
+    - nginx
+    - php
+    - php-fpm-connect-to-nginx
+    - memcached
+    - php-session-in-memcache
+    - detect-hostname
+    - create-virtual-host
+    - certbot
+    - mysql
+    - wordpress
+    - sftp-user
+
+  tasks:
+    - name: "Remove useless packages"
+      ansible.builtin.command: "yum clean all"
+    - name: "Remove useless packages"
+      ansible.builtin.command: "yum clean all"
+
+    - name: "Remove useless dependencies"
+      ansible.builtin.yum:
+        autoremove: yes
+
+  handlers:
+    - include: handlers/handlers.yml

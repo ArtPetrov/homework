@@ -1,0 +1,20 @@
+---
+- name: "Restart nginx"
+  ansible.builtin.systemd:
+    name: "nginx"
+    state: restarted
+
+- name: "Restart php-fpm"
+  ansible.builtin.systemd:
+    name: "php-fpm"
+    state: restarted
+
+- name: "Restart mysql"
+  ansible.builtin.systemd:
+    name: "mysqld"
+    state: restarted
+
+- name: "Restart sshd"
+  ansible.builtin.systemd:
+    name: "sshd"
+    state: restarted

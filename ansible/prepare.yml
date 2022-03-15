@@ -1,0 +1,14 @@
+---
+- name: "Prepare server for installation"
+  hosts: "root_access"
+  vars:
+    devops_account:
+      login: "devops"
+      password: "Slurm123456"
+
+  tasks:
+    - name: "Make sudo user"
+      ansible.builtin.user:
+        name: "{{ devops_account.login }}"
+        password: "{{ devops_account.password | password_hash('sha512') }}"
+        groups: "wheel"

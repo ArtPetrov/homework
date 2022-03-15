@@ -1,0 +1,43 @@
+---
+- name: "Install yum-utils"
+  ansible.builtin.yum:
+    name: "yum-utils"
+    state: present
+
+- name: "Add EPEL repository"
+  ansible.builtin.yum_repository:
+    name: "epel"
+    description: "EPEL repo"
+    baseurl: "https://download.fedoraproject.org/pub/epel/$releasever/$basearch/"
+    gpgcheck: false
+
+- name: "Install REMI repository"
+  ansible.builtin.yum:
+    name: "https://rpms.remirepo.net/enterprise/remi-release-7.rpm"
+    state: present
+
+- name: "Install php and base extensions"
+  ansible.builtin.yum:
+    enablerepo: "remi-{{ php_version }}"
+    name:
+      - php
+      - php-cli
+      - php-fpm
+      - php-mysqlnd
+      - php-zip
+      - php-devel
+      - php-gd
+      - php-mbstring
+      - php-curl
+      - php-xml
+      - php-pear
+      - php-bcmath
+      - php-json
+    state: present
+    update_cache: true
+
+- name: "Start and enable autorun php-fpm"
+  ansible.builtin.systemd:
+    state: started
+    name: "php-fpm"
+    enabled: true

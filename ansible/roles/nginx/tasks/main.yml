@@ -1,0 +1,36 @@
+---
+- name: "Add  official nginx repository"
+  ansible.builtin.yum_repository:
+    name: "nginx"
+    description: "Nginx.org mainline"
+    baseurl: "https://nginx.org/packages/mainline/centos/$releasever/$basearch/"
+    gpgcheck: false
+
+- name: "Install nginx"
+  ansible.builtin.yum:
+    name:
+      - "{{ nginx_version }}"
+      - "ipset"
+      - "firewalld"
+    state: latest
+    update_cache: true
+
+- name: "Open firewall for HTTP/HTTPS"
+  ansible.builtin.firewalld:
+    zone: "public"
+    port: "{{ item.port }}"
+    permanent: true
+    state: "{{ item.state }}"
+  loop:
+    "{{ ports.nginx }}"
+
+- name: "Restart firewalld"
+  ansible.builtin.systemd:
+    name: "firewalld"
+    state: restarted
+
+- name: "Start and enable autorun 'nginx'"
+  ansible.builtin.systemd:
+    state: started
+    name: "nginx"
+    enabled: true

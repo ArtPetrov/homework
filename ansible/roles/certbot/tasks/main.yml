@@ -1,0 +1,31 @@
+---
+- name: "Install"
+  ansible.builtin.yum:
+    name:
+      - epel-release
+      - certbot-nginx
+    state: present
+    update_cache: true
+
+- name: "Check directory with SSL"
+  stat:
+    path: "/etc/letsencrypt/live/{{ virtual_hostname }}"
+  register: ssl_directory
+
+- name: "Run generation SSL"
+  ansible.builtin.shell: "certbot --nginx --non-interactive --agree-tos --register-unsafely-without-email -d {{ virtual_hostname }} -d www.{{ virtual_hostname }}"
+  when: not ssl_directory.stat.exists
+
+- name: "Add cron task for cerbot"
+  ansible.builtin.cron:
+    name: "check dirs"
+    minute: "20"
+    hour: "4"
+    job: "/usr/bin/certbot renew --quiet"
+
+- name: "Update .conf and make redirect from www to non-www"
+  ansible.builtin.template:
+    src: "example.com.conf.j2"
+    dest: "/etc/nginx/sites-enabled/{{ virtual_hostname }}.conf"
+  notify:
+    - "Restart nginx"

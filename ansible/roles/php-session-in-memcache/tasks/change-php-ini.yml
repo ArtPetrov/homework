@@ -1,0 +1,6 @@
+---
+- name: "Change save_handler in php.ini"
+  ansible.builtin.lineinfile:
+    path: "/etc/php.ini"
+    regexp: "^session.save_handler = files"
+    line: "session.save_handler = memcached"

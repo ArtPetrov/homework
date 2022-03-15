@@ -1,0 +1,12 @@
+---
+- name: "Change 'save_handler' in php.conf(httpd)"
+  ansible.builtin.lineinfile:
+    path: "/etc/httpd/conf.d/php.conf"
+    regexp: 'php_value session.save_handler "files"'
+    line: '    php_value session.save_handler "memcached"'
+
+- name: "Change 'save_path' in php.conf(httpd)"
+  ansible.builtin.lineinfile:
+    path: "/etc/httpd/conf.d/php.conf"
+    regexp: 'php_value session.save_path    "/var/lib/php/session"'
+    line: '    php_value session.save_path    "/var/run/memcached/memcached.sock"'

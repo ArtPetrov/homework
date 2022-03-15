@@ -1,0 +1,20 @@
+---
+- name: "Install php-memcached"
+  ansible.builtin.yum:
+    enablerepo: "remi-{{ php_version }}"
+    name:
+      - php-memcached
+    state: present
+    update_cache: true
+
+- name: "Enable extension 'memcached.so'"
+  ansible.builtin.lineinfile:
+    path: "/etc/php.d/50-memcached.ini"
+    regexp: "^;extension=memcached.so"
+    line: "extension=memcached.so"
+
+- import_tasks: change-php-ini.yml
+- import_tasks: change-httpd-php-conf.yml
+- import_tasks: change-php-fpm-conf.yml
+  notify:
+    - "Restart php-fpm"

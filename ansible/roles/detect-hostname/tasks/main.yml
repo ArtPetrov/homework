@@ -1,0 +1,10 @@
+---
+- name: "Auto detected hostname for virtual host"
+  set_fact:
+    virtual_hostname: "{{ ansible_facts.fqdn }}"
+  when: hostname == "auto"
+
+- name: "Manual setting hostname for virtual host"
+  set_fact:
+    virtual_hostname: "{{ hostname }}"
+  when: hostname != "auto"

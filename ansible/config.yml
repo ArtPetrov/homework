@@ -1,0 +1,21 @@
+---
+# "auto" find hostname or preset manual(example - hostname: "dev.test.ru")
+hostname: "auto"
+nginx_version: "nginx-1.21.6"
+php_version: "php81"
+
+db:
+  host: "localhost"
+  name: "test"
+  user: "test"
+  password: "Test123456!"
+
+sftp:
+  developer:
+    name: "dev"
+    password: "Test123456"
+
+ports:
+  nginx:
+    - { port: "80/tcp", state: enabled }
+    - { port: "443/tcp", state: enabled }

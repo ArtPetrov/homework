@@ -1,0 +1,4 @@
+USER="memcached"
+MAXCONN="1024"
+CACHESIZE="128"
+OPTIONS="-t 4 -s /var/run/memcached/memcached.sock -a 666"

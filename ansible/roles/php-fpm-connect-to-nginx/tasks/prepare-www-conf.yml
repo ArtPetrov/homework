@@ -1,0 +1,30 @@
+---
+- name: "Change user 'apache' to 'nginx' [www.conf]"
+  ansible.builtin.lineinfile:
+    path: "/etc/php-fpm.d/www.conf"
+    regexp: "^user = apache"
+    line: "user = nginx"
+
+- name: "Change user 'apache' to 'nginx' [www.conf]"
+  ansible.builtin.lineinfile:
+    path: "/etc/php-fpm.d/www.conf"
+    regexp: "^group = apache"
+    line: "group = nginx"
+
+- name: "Change TPC to SOCK [www.conf]"
+  ansible.builtin.lineinfile:
+    path: "/etc/php-fpm.d/www.conf"
+    regexp: "^listen = 127.0.0.1:9000"
+    line: "listen = /var/run/php-fpm/php-fpm.sock"
+
+- name: "Uncomment listen.owner [www.conf]"
+  ansible.builtin.lineinfile:
+    path: "/etc/php-fpm.d/www.conf"
+    regexp: "^;listen.owner = nobody"
+    line: "listen.owner = nginx"
+
+- name: "Uncomment listen.group [www.conf]"
+  ansible.builtin.lineinfile:
+    path: "/etc/php-fpm.d/www.conf"
+    regexp: "^;listen.group = nobody"
+    line: "listen.group = nginx"

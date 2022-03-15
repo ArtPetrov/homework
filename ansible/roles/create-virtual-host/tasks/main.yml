@@ -1,0 +1,16 @@
+---
+- import_tasks: prepare-nginx-folders.yml
+
+- name: "Make folder for virtual host"
+  ansible.builtin.template:
+    src: "example.com.conf.j2"
+    dest: "/etc/nginx/sites-enabled/{{ virtual_hostname }}.conf"
+  notify:
+    - "Restart nginx"
+
+- name: "Create a directory for virtual host"
+  ansible.builtin.file:
+    path: "/var/www/{{ virtual_hostname }}"
+    state: directory
+    owner: "nginx"
+    group: "nginx"
